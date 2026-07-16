@@ -4,33 +4,33 @@ on:
   schedule:
     # 星期一到五，每小時執行一次 (UTC 時間)
     - cron: '0 * * * 1-5'
-  workflow_dispatch: # 允許手動點擊按鈕觸發執行
+  workflow_dispatch:
 
 permissions:
-  contents: write # 允許寫入 index.html 到倉庫
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 檢出專案代碼
+    - name: Check out repo
       uses: actions/checkout@v4
 
-    - name: 設定 Python 環境
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
-    - name: 安裝相依套件
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: 執行 Python 抓取數據
+    - name: Run script
       run: python fetch_indices.py
 
-    - name: 提交更新到 GitHub 倉庫
+    - name: Commit and push changes
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
