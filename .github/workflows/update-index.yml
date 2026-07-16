@@ -1,0 +1,39 @@
+name: Auto Fetch Market Indices
+
+on:
+  schedule:
+    # 星期一到五，每小時執行一次 (UTC 時間)
+    - cron: '0 * * * 1-5'
+  workflow_dispatch: # 允許手動點擊按鈕觸發執行
+
+permissions:
+  contents: write # 允許寫入 index.html 到倉庫
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 檢出專案代碼
+      uses: actions/checkout@v4
+
+    - name: 設定 Python 環境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: 安裝相依套件
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: 執行 Python 抓取數據
+      run: python fetch_indices.py
+
+    - name: 提交更新到 GitHub 倉庫
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add index.html
+        git diff-index --quiet HEAD || git commit -m "Auto-update market indices [skip ci]"
+        git push
