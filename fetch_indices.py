@@ -2,6 +2,8 @@ import os
 import yfinance as yf
 import pandas as pd
 from datetime import datetime
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # 1. 定義要抓取的全球指數 (分類別)
 INDICES = {
@@ -94,7 +96,8 @@ def fetch_data():
     return all_data
 
 def generate_html(data):
-    update_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    #update_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    update_time = datetime.now(ZoneInfo("Asia/Hong_Kong")).strftime("%Y-%m-%d %H:%M:%S")
     
     # 開始構建 HTML 模板
     html_content = f"""<!DOCTYPE html>
